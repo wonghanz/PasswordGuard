@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>PasswordGuard — check a password offline on your Android phone, with no upload and no API key</title>
+<meta name="description" content="PasswordGuard is a free, MIT-licensed Android app that judges a password, passphrase or email address entirely on your device. Instead of multiplying length by character variety it estimates the cheapest route a real guesser would take: an embedded list of 216 common passwords, 221 English words, keyboard-row runs, ascending and descending sequences, tiled repeats, calendar dates, and the words you supply as your own context. It prints the naive meter figure next to its own so the gap is visible, gives no percentage and no time-to-crack claim, stores nothing you type, needs no account, and makes no network request unless you add your own key for an optional explanation pass that never receives the password.">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Canonical is where this file is intended to live. GitHub Pages is not enabled
+     on this repository yet, so until it is, this URL resolves nowhere. Deliberately
+     no og:image: there is no banner asset in the repo, and declaring one that 404s
+     is worse than declaring none. -->
+<link rel="canonical" href="https://wonghanz.github.io/PasswordGuard/">
+<meta name="theme-color" content="#07161A">
+<meta name="keywords" content="password strength checker offline, password checker android no upload, offline entropy calculator, passphrase strength meter, check password without sending it, gmail dot alias, plus addressing, password best practices, NIST 800-63B, open source android, jetpack compose, no account, MIT licensed">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PasswordGuard">
+<meta property="og:title" content="PasswordGuard — the password checker that never sees your password">
+<meta property="og:description" content="On-device guess-budget model for Android. Prints the naive charset-times-length figure next to the cheapest real attack route, publishes every weight, refuses time-to-crack claims, and stores nothing.">
+<meta property="og:url" content="https://wonghanz.github.io/PasswordGuard/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PasswordGuard — offline password and email reading for Android">
+<meta name="twitter:description" content="Length times character variety is the wrong question. The right one is how a guesser reaches your string first. Computed on the device, with no key and no network.">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "PasswordGuard",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Android 8.0 and newer",
+  "description": "Open-source Android app that estimates how expensive a password, passphrase or email address is to guess, entirely on the device. Rather than multiplying length by character-class variety it enumerates attack routes and keeps the cheapest: exact position within an embedded list of 216 common passwords, the same list after lookalike substitutions, a list entry with a prefix or suffix, a single word from 221 embedded English words with optional trailing digits, keyboard-row runs, ascending and descending character runs, the smallest repeating unit that tiles the string, embedded calendar dates, and containment of context words the user supplies. It reports the naive charset-to-the-length figure alongside its own estimate so the gap between them is visible. It deliberately outputs no percentage, no verdict on whether an account is safe, and no time-to-crack duration, and it refuses to produce a band at all for inputs containing non-ASCII symbols it cannot size. An optional plain-words pass posts a structural summary of finding keys and bit deltas to a user-supplied OpenAI-compatible endpoint; fragments of the input are withheld from that path and from the clipboard export. The app ships without any API key, requests no runtime permission, writes nothing typed to storage, and clears the field when the app leaves the foreground.",
+  "url": "https://wonghanz.github.io/PasswordGuard/",
+  "codeRepository": "https://github.com/wonghanz/PasswordGuard",
+  "programmingLanguage": ["Kotlin", "Jetpack Compose"],
+  "softwareVersion": "0.1.0",
+  "datePublished": "2026-09-20",
+  "isAccessibleForFree": true,
+  "license": "https://opensource.org/licenses/MIT",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+  "featureList": [
+    "offline password and passphrase strength estimation on Android",
+    "guess-budget route model that keeps the cheapest attack rather than the flattest average",
+    "naive entropy figure printed beside the model estimate to expose the gap",
+    "216-entry common password list and 221-entry English word list embedded in the APK",
+    "lookalike-substitution, affix, keyboard-run, sequence, repetition and calendar-date detectors",
+    "user-supplied context words to approximate a targeted rather than a bulk attacker",
+    "email address reading: Gmail dot and plus behaviours, year in the local part, role and throwaway domains",
+    "inconclusive output instead of a number when the input cannot be sized",
+    "bring-your-own AI endpoint for an optional structure-only explanation",
+    "nothing typed is persisted, screenshot blocking via FLAG_SECURE, no share target by design",
+    "no runtime permission requested and no telemetry"
+  ],
+  "softwareRequirements": ["Android 8.0 (API 26) or newer"],
+  "publisher": { "@type": "Person", "name": "wonghanz", "url": "https://github.com/wonghanz" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does PasswordGuard upload my password?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No, and there is no code path by which it could. The strength reading is computed locally against embedded lists. The optional AI explanation pass sends a structural summary of lengths, finding keys and bit deltas; findings whose on-screen text quotes a fragment of the input are flagged and withheld from both the clipboard export and the network path. Turn the switch off and the app makes no request at all." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does PasswordGuard give a bit budget instead of strong or weak?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Because a label without a stated model is a mood rather than a measurement. The app publishes every route cost in its README, keeps the smallest as the reading, and shows the arithmetic, so a disagreement can be about one specific row rather than about the app. The bands are thresholds against that published budget, not calibrated scores." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why doesn't it tell me how long it would take to crack my password?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Converting a bit budget into seconds requires assuming the attacker's hardware and assuming they are attacking every password rather than yours. Both assumptions are hidden inside the usual 3-quadrillion-years figure, which is a large part of why people trust passwords that are not safe. PasswordGuard prints bits and the route that produced them, and no duration." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is PasswordGuard a password manager?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. It stores nothing, including after you close it, and it does not generate passwords. It is a checker that forgets: the input lives in memory only while the screen is in the foreground and is cleared when the app stops." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can it tell me whether my password has already been leaked?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. A breach check means querying a remote database of other people's leaks, which this app will not do. It tests against a small embedded list of 216 entries and states plainly that being absent from a small list proves nothing about being absent from a real breach corpus." }
+    },
+    {
+      "@type": "Question",
+      "name": "What are the context words for?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Every published corpus is built from mistakes that belong to nobody in particular. The attacks that actually land on one account use that person's surname, child's name, street and birth year. The optional context field lets the reading approximate an attacker who knows you. It is held in memory like everything else, and it is an approximation, not a model of a real targeted attack." }
+    },
+    {
+      "@type": "Question",
+      "name": "What does the email address mode do, since an address is not a password?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Exactly that, and it gives an address no strength band. It reports the behaviours people learn about afterwards: Gmail ignores dots so an aliased address is one mailbox, a plus-tag is a label rather than a shield, a four-digit group in the local part reads as a birth year, role names such as admin or info are harvested by design, and some domains exist only to receive mail briefly. It is a descriptive reading of the characters." }
+    },
+    {
+      "@type": "Question",
+      "name": "Why does it sometimes say Inconclusive instead of a number?",
+      "acceptedAnswer": { "@type": "Answer", "text": "When the input contains a non-ASCII symbol or pictograph, the alphabet size is a number the app does not have, so every downstream figure would be wrong. It refuses rather than inventing one. Accented letters and other scripts are not refused: they widen the alphabet by a stated conservative floor of 50 and the reading is marked as conservative." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an account or an API key to use PasswordGuard?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Neither. All analysis works offline indefinitely. The key field exists for the optional explanation pass and accepts any OpenAI-compatible endpoint, including one on your own network. No key is bundled and no free tier is routed through anyone else's account." }
+    }
+  ]
+}
+</script>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+         background: #07161A; color: #F2F8F9; }
+  .wrap { max-width: 760px; margin: 0 auto; padding: 64px 22px 80px; }
+  h1 { font-size: clamp(30px, 6vw, 44px); line-height: 1.15; letter-spacing: -0.02em; margin: 0 0 10px; }
+  .lede { font-size: 19px; color: #9FB6BB; margin: 0 0 30px; }
+  .mark { display: inline-block; width: 32px; height: 32px; border-radius: 8px 8px 14px 14px;
+          border: 2.5px solid #4FE0E4; position: relative; margin-bottom: 18px; }
+  .mark::after { content: ""; position: absolute; left: 11px; top: 9px; width: 7px; height: 7px;
+                 border-radius: 50% 50% 2px 2px; background: #4FE0E4; }
+  .cta { display: inline-block; background: #0B6C72; color: #fff; text-decoration: none;
+         padding: 13px 24px; border-radius: 999px; font-weight: 600; margin: 0 10px 14px 0; }
+  .cta.alt { background: transparent; border: 1px solid #2A4B53; color: #F2F8F9; }
+  h2 { font-size: 15px; text-transform: uppercase; letter-spacing: .1em; color: #4FE0E4;
+       margin: 46px 0 14px; }
+  ul { padding-left: 20px; margin: 0; }
+  li { margin-bottom: 9px; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 9px 0; border-bottom: 1px solid #163137; }
+  th { color: #9FB6BB; font-weight: 500; }
+  td.n { text-align: right; font-variant-numeric: tabular-nums; color: #4FE0E4; white-space: nowrap; }
+  .note { background: #10262B; border: 1px solid #1A353C; border-radius: 18px; padding: 18px 20px; margin-top: 26px; }
+  .note strong { color: #E8A33D; }
+  footer { margin-top: 54px; font-size: 14px; color: #9FB6BB; }
+  a { color: #4FE0E4; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="mark" aria-hidden="true"></span>
+  <h1>PasswordGuard</h1>
+  <p class="lede">An open source Android app that judges a password, passphrase or email address
+  on your phone. It does not ask how random your string looks. It asks how a guesser would reach
+  it first — and reports the cheapest route it can find.</p>
+
+  <p>
+    <a class="cta" href="https://github.com/wonghanz/PasswordGuard">Source on GitHub</a>
+    <a class="cta alt" href="https://github.com/wonghanz/PasswordGuard/blob/main/README.md">Full weight table</a>
+  </p>
+
+  <h2>The mistake every meter makes</h2>
+  <p>A strength bar multiplies <em>length</em> by <em>character variety</em> and calls the product
+  entropy. For <code>Summer2019</code> that is 59 bits, which reads as safe. The cheapest actual
+  route to it is one word from a small list plus four digits — about 18 bits. The 41-bit gap is
+  not rounding; it is the difference between a number and a measurement.</p>
+  <p>PasswordGuard prints <strong>both</strong> figures side by side, because the gap is the
+  honest lesson. Once you have watched your own password get scored 41 bits too generously you do
+  not go back to trusting a green bar.</p>
+
+  <h2>Six routes, all on your phone</h2>
+  <ul>
+    <li><strong>Lists, not luck</strong> — 216 common passwords and 221 English words ship inside
+      the APK. Position in the list <em>is</em> the cost, so the reading uses it directly. A
+      lookalike fold (<code>0→o @→a 1→i 3→e</code>) catches <code>p@ssw0rd</code>, and an affix
+      check catches a listed password with a year stuck on the end, which is the most productive
+      mutation there is.</li>
+    <li><strong>Sequences and repeats</strong> — four or more keys along one keyboard row, any
+      ascending or descending run, and the smallest unit that tiles the whole string. Every
+      generator enumerates these, so treating them as free characters is what inflates the naive
+      figure.</li>
+    <li><strong>Calendar dates</strong> — eight digits, or separated triples, that parse on a real
+      calendar. A birthday is the shape of a targeted attack, not of a random one.</li>
+    <li><strong>Your own context</strong> — optionally type a surname, a birth year, a pet, a town.
+      Bulk corpora cannot see these; an attacker who knows you can. Held in memory, wiped like
+      everything else.</li>
+    <li><strong>Email reading</strong> — a separate mode that refuses to give a band, because an
+      address is not a secret. It reads the Gmail dot and plus rules that make an "alias" one
+      mailbox, a birth year hiding in the local part, role names harvested by design, and
+      throwaway domains.</li>
+    <li><strong>Honest refusal</strong> — a non-ASCII symbol means the alphabet size is unknown, so
+      the app says <em>Inconclusive</em> rather than print a number that would look like a
+      measurement.</li>
+  </ul>
+
+  <h2>Every number, published</h2>
+  <p>The reading keeps the <strong>smallest</strong> route, because that is the one an attacker
+  takes. A <code>−N</code> figure means this route is N bits cheaper than treating the string as
+  random; the figures do not stack.</p>
+  <table>
+    <tr><th>Route</th><th class="n">Cost</th></tr>
+    <tr><td>Nothing matched — length × log2(alphabet)</td><td class="n">baseline</td></tr>
+    <tr><td>Exact entry on the 216-list, at rank r</td><td class="n">log2(r + 1)</td></tr>
+    <tr><td>Same, after lookalike substitutions</td><td class="n">log2(r + 1) + 3</td></tr>
+    <tr><td>A listed password with a prefix or suffix</td><td class="n">≈ 16.4</td></tr>
+    <tr><td>One English word from the 221-list</td><td class="n">≈ 7.8</td></tr>
+    <tr><td>A word plus up to four digits</td><td class="n">≈ 18.8</td></tr>
+    <tr><td>Keyboard-row run of L characters</td><td class="n">log2(47 × L)</td></tr>
+    <tr><td>Ascending or descending run of L</td><td class="n">log2(95 × L)</td></tr>
+    <tr><td>String tiled from a unit of length U</td><td class="n">U·log2(alphabet) + 3.3</td></tr>
+    <tr><td>An embedded calendar date</td><td class="n">≈ 17.7</td></tr>
+    <tr><td>Equals one of your context words</td><td class="n">3.3 (+11 digits)</td></tr>
+    <tr><td>Contains one of your context words</td><td class="n">7.6 (+11 digits)</td></tr>
+  </table>
+
+  <table style="margin-top:26px">
+    <tr><th>Budget</th><th>Reading</th></tr>
+    <tr><td>under 24 bits</td><td>Guessable in one sitting</td></tr>
+    <tr><td>24 – 39</td><td>Weak where it matters</td></tr>
+    <tr><td>40 – 59</td><td>Workable, not durable</td></tr>
+    <tr><td>60 – 79</td><td>Solid for one account</td></tr>
+    <tr><td>80 and up</td><td>Strong by any standard we can see</td></tr>
+    <tr><td>unsizeable input</td><td><strong>Inconclusive</strong> — no number is printed</td></tr>
+  </table>
+
+  <div class="note">
+    <p><strong>Three refusals, and they are the design.</strong> No percentage anywhere. No
+    time-to-crack duration, because turning bits into years means assuming a stranger's hardware
+    and assuming they are attacking everyone rather than you. No breach lookup, because that means
+    sending a hash of your secret to somebody's database to ask whether it is already there.</p>
+    <p><strong>What it cannot see:</strong> whether your password has been exposed in a real breach;
+    what a targeted attacker who knows you would guess beyond the context words you type; and
+    anything at all about a password you did not enter here. Stated blind spots, not silent
+    ones.</p>
+  </div>
+
+  <h2>Bring your own key, structure only</h2>
+  <p>No default provider, no free tier routed through anyone, no key in the repository. Settings
+  takes a base URL, a model name and a key, stored in this app's private DataStore with
+  <code>allowBackup=false</code>. What goes out is a structural summary — finding keys and bit
+  deltas — and any finding whose on-screen text quotes part of your input is withheld from that path
+  entirely. Point it at an <code>ollama</code> or <code>llama.cpp</code> endpoint on your own network
+  and even the summary stays local.</p>
+
+  <h2>Privacy, stated</h2>
+  <ul>
+    <li>Runtime permissions requested: <strong>none</strong>. Nothing is read from storage,
+      contacts, accounts or the camera.</li>
+    <li>What you type is never written to DataStore, a file or a log. It is cleared when the app
+      leaves the foreground.</li>
+    <li><code>FLAG_SECURE</code> blocks screenshots and keeps the screen out of the recents
+      thumbnails. There is deliberately <strong>no share target</strong>: accepting a secret from
+      another app would put that app, and the share sheet, in charge of it.</li>
+    <li>Analytics, crash reporting, ads, attribution SDKs: none.</li>
+    <li>One residual limit, said plainly: a text field holds an immutable string that cannot be
+      zeroed from application code, and a system autofill service may see keystrokes. This build
+      cannot disable autofill at the Compose version it pins.</li>
+  </ul>
+
+  <h2>Build it</h2>
+  <p>Requires JDK 17 and Android SDK platform 35. AGP 8.7.3, Kotlin 2.0.21, Compose BOM
+  2024.12.01. The debug APK is signed with the standard Android debug key. There is no backend, so
+  there is nothing to self-host.</p>
+  <pre style="background:#10262B;border:1px solid #1A353C;border-radius:14px;padding:16px;overflow:auto"><code>git clone https://github.com/wonghanz/PasswordGuard.git
+cd PasswordGuard
+export ANDROID_HOME=/path/to/Android/Sdk
+./gradlew --no-daemon :app:assembleDebug</code></pre>
+
+  <footer>
+    MIT licensed · Kotlin and Jetpack Compose · Android 8.0+ ·
+    part of the <a href="https://github.com/wonghanz">CapriGuard</a> tools set ·
+    companion to <a href="https://github.com/wonghanz/VerifyGuard">VerifyGuard</a> and
+    <a href="https://github.com/wonghanz/LeakGuard">LeakGuard</a> ·
+    <a href="https://github.com/wonghanz/PasswordGuard/issues">issues</a>
+  </footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A shield with a keyhole over four masked characters: something secret, held
+     in place, and measured rather than guessed at. Vector paths only, so no
+     raster asset is committed, and it reads in one colour because the adaptive
+     monochrome layer reuses this same drawable. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- shield -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="3.1"
+        android:strokeLineJoin="round"
+        android:pathData="M54,24 L76,32 Q79,33 79,36 L79,54 Q79,68 54,80 Q29,68 29,54 L29,36 Q29,33 32,32 Z" />
+
+    <!-- keyhole -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="2.8"
+        android:pathData="M54,40.5 m-5.2,0 a5.2,5.2 0 1,0 10.4,0 a5.2,5.2 0 1,0 -10.4,0 Z" />
+    <path
+        android:fillColor="#4FE0E4"
+        android:strokeColor="#4FE0E4"
+        android:strokeWidth="2.8"
+        android:strokeLineCap="round"
+        android:pathData="M54,45.5 L54,55" />
+
+    <!-- the masked characters under it -->
+    <path
+        android:fillColor="#4FE0E4"
+        android:pathData="M41,66 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0 Z" />
+    <path
+        android:fillColor="#4FE0E4"
+        android:pathData="M50,66 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0 Z" />
+    <path
+        android:fillColor="#4FE0E4"
+        android:strokeAlpha="0.62"
+        android:pathData="M59,66 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0 Z" />
+    <path
+        android:fillColor="#4FE0E4"
+        android:strokeAlpha="0.3"
+        android:pathData="M68,66 m-2.6,0 a2.6,2.6 0 1,0 5.2,0 a2.6,2.6 0 1,0 -5.2,0 Z" />
+</vector>

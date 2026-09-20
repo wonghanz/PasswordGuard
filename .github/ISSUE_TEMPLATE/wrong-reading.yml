@@ -1,0 +1,40 @@
+name: Wrong reading
+description: The findings or their weights pointed one way and you read it another
+labels: ["heuristic"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        PasswordGuard reports a guess budget and the route that produced it, not a
+        risk score. A "wrong reading" here means a route cost is miscalibrated,
+        which is a real and fixable problem — but it does not mean the app should
+        be printing a percentage, or a time-to-crack figure, instead.
+  - type: textarea
+    id: what
+    attributes:
+      label: What the input was, and what the app said
+      description: The length and character classes of the string, whether you filled the context-words field, and the band, budget and naive figure it reported. Do not paste the password itself into this form.
+    validations:
+      required: true
+  - type: textarea
+    id: findings
+    attributes:
+      label: The findings list, copied from "Copy"
+      description: Includes which rows were marked possible rather than read, which is usually where the disagreement is.
+      render: text
+    validations:
+      required: true
+  - type: textarea
+    id: missed
+    attributes:
+      label: Anything about the input that the app did not list
+      description: Known limits are in SECURITY.md — the embedded thumbnail, WebP and HEIF writes, and text past 2,000 characters are all out of scope by design, not bugs.
+    validations:
+      required: false
+  - type: dropdown
+    id: android
+    attributes:
+      label: Android version
+      options: ['11', '12', '13', '14', '15', '16']
+    validations:
+      required: true

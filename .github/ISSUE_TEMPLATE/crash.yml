@@ -1,0 +1,33 @@
+name: Crash or build failure
+description: The app stopped, or the build did not finish
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        If a specific input makes the app stop, note its length and which character
+        classes it contains. Do not paste the password itself into a public issue —
+        describe it.
+  - type: textarea
+    id: repro
+    attributes:
+      label: What you did
+      placeholder: |
+        1. Opened app
+        2. Picked a screenshot from Downloads
+        3. Toggled Heat map
+        4. App closed
+    validations:
+      required: true
+  - type: textarea
+    id: log
+    attributes:
+      label: Relevant logcat lines
+      description: FATAL EXCEPTION block, or the gradle failure if the build broke.
+      render: text
+  - type: textarea
+    id: env
+    attributes:
+      label: Device, Android version, commit
+    validations:
+      required: true
