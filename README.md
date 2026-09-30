@@ -240,8 +240,10 @@ app/src/main/java/dev/capriguard/passwordguard/
 
 ## Related
 
-- [VerifyGuard](https://github.com/wonghanz/VerifyGuard) — what a photo says about how it was made.
-- [LeakGuard](https://github.com/wonghanz/LeakGuard) — what a photo says about you.
+Two companions in the same family, not published yet:
+
+- **VerifyGuard** — what a photo says about how it was made.
+- **LeakGuard** — what a photo says about you.
 
 ## Contributing
 
