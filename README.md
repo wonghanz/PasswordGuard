@@ -95,7 +95,7 @@ floor of 50 and the reading is marked conservative.
 | --- | --- | --- | --- |
 | `password` | 2^37 | **2^1** | second entry on a list everybody carries |
 | `Summer2019` | 2^59 | **2^18** | a word from a small list, plus four digits |
-| `correct horse battery staple` | 2^122 | **2^122** | nothing matched; length did the work |
+| `correct horse battery staple` | 2^131 | **2^131** | nothing matched; length did the work |
 
 The middle row is the one worth internalising: 41 bits of the naive figure were
 never real.

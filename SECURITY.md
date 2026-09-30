@@ -66,6 +66,7 @@ contact a third party about the password.
 
 ## Reporting
 
-Open a [private security advisory](../../security/advisories/new) rather than a
-public issue. Expect a reply within a week; this is a solo-maintained project, so
+Open a
+[private security advisory](https://github.com/wonghanz/PasswordGuard/security/advisories/new)
+rather than a public issue. Expect a reply within a week; this is a solo-maintained project, so
 "soon" is honest and "24 hours" is not a promise worth making.
